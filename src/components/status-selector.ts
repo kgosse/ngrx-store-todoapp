@@ -2,7 +2,7 @@
  * Created by kevin on 05/05/2016.
  */
 
-import {Component, OnInit} from "angular2/core";
+import {Component, OnInit} from "@angular/core";
 import {TodoService} from "../services/todo.service";
 import * as Statuses from "../constants/Statuses";
 
@@ -11,7 +11,7 @@ import * as Statuses from "../constants/Statuses";
     selector: 'status-selector',
     template:`
         <select #sel (change)="statusChange(sel.value)">
-            <option *ngFor="#status of statuses">
+            <option *ngFor="let status of statuses">
                 {{status}}
             </option>
         </select>

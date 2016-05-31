@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter} from "angular2/core";
+import {Injectable, EventEmitter} from "@angular/core";
 import {Todo, TodoStore} from '../store';
 import {Action} from "../interfaces/Action";
 import {STATUS_CHANGE, ARCHIVE, TEXT_CHANGE} from "../constants/ActionTypes";
@@ -7,7 +7,7 @@ import {STATUS_CHANGE, ARCHIVE, TEXT_CHANGE} from "../constants/ActionTypes";
 
 @Injectable()
 export class TodoService {
-    public todoEvent: EventEmitter<Action>;
+    public todoEvent: EventEmitter<any>;
     private _todoStore: TodoStore;
 
     constructor() {

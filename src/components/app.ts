@@ -1,11 +1,22 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {TodoService} from "../services/todo.service";
 import {TodoList} from "./todo-list";
 import {Todo} from "../store/index";
 import {Menubar} from "./menubar";
 
+import {Store} from '@ngrx/store';
+import {AppState} from "../interfaces/AppState";
+
+
 @Component({
     selector: 'app',
+    providers: [
+        TodoService
+    ],
+    directives: <any[]>[
+        TodoList,
+        Menubar
+    ],
     template: `
       <h1 class="title">Todo App</h1>
       <section id="todoapp">
@@ -25,19 +36,12 @@ import {Menubar} from "./menubar";
         <p>Created by <a href="http://kgosse.github.io/resumecard" target="_blank">kgosse</a></p>
         <p>Based on <a href="http://todomvc.com" target="_blank">TodoMVC</a></p>
       </footer>
-    `,    
-    providers: [
-        TodoService
-    ],
-    directives: [
-        TodoList,
-        Menubar
-    ]
+    `
 })
 export class App {
     todo:Todo = new Todo('');
 
-    constructor(private _todoService: TodoService) {}
+    constructor(private _todoService: TodoService, store: Store<AppState>) {}
 
     addTodo() {
         if (this.todo.text.trim() === '')
@@ -45,7 +49,7 @@ export class App {
         this._todoService.addTodo(this.todo);
         this.todo = new Todo('');
     }
-    
+
     toggleTodos() {
         this._todoService.toggleTodos();
     }
