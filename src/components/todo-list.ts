@@ -13,7 +13,7 @@ import {removeTodo, toggleTodo} from "../actions/todos";
     pipes:<any[]>[StatusPipe, TextPipe],
     template:`
             <ul id="todo-list">
-              <li *ngFor="let todo of (todos | async) | status: _status | text: (filters | async).text" [class.completed]="todo.done" [class.editing]="todo.editing">
+              <li *ngFor="let todo of (todos | async) | status: (filters | async).status | text: (filters | async).text" [class.completed]="todo.done" [class.editing]="todo.editing">
                 <div class="view">
                   <input type="checkbox" class="toggle" [checked]="todo.done" (click)="toggleTodo$.next(todo)">
                   <label (dblclick)="editTodo(todo)">{{todo.text}}</label>
@@ -27,8 +27,6 @@ import {removeTodo, toggleTodo} from "../actions/todos";
 export class TodoList implements OnInit{
     todos;
     filters;
-    _status: "";
-    _text: "";
 
     removeClick$ = new Rx.Subject()
         .map((payload) =>  removeTodo(payload));

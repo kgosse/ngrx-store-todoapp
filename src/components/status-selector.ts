@@ -2,33 +2,32 @@
  * Created by kevin on 05/05/2016.
  */
 
-import {Component, OnInit} from "@angular/core";
-import {TodoService} from "../services/todo.service";
-import * as Statuses from "../constants/Statuses";
-
+import {Component} from "@angular/core";
+import {ALL, IN_PROGRESS, DONE, filterByStatus} from "../actions/filters";
+import {AppState} from "../interfaces/AppState";
+import {Store} from "@ngrx/store";
+import * as Rx from "rxjs/Rx";
 
 @Component({
     selector: 'status-selector',
     template:`
-        <select #sel (change)="statusChange(sel.value)">
+        <select #sel (change)="changeStatus$.next(sel.value)">
             <option *ngFor="let status of statuses">
                 {{status}}
             </option>
         </select>
     `
 })
-export class StatusSelector implements OnInit{
-    statuses = [];
-    
-    constructor(private _todoService: TodoService) {}
+export class StatusSelector {
+    statuses = [ALL, IN_PROGRESS, DONE];
 
-    statusChange(val) {
-        this._todoService.statusChange(val);
-    }
-    
-    ngOnInit(){
-        for (let status in Statuses)
-            this.statuses.push(Statuses[status]);
-        this.statusChange(this.statuses[0]);
+    changeStatus$ = new Rx.Subject()
+        .map((status) => filterByStatus(status));
+
+    constructor(store: Store<AppState>) {
+        Rx.Observable.merge(
+            this.changeStatus$
+        )
+            .subscribe(store.dispatch.bind(store));
     }
 }

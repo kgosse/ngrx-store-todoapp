@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Effect, StateUpdates} from "@ngrx/effects";
 import {AppState} from "../interfaces/AppState";
 import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE} from "../actions/todos";
-import {TEXT_UPDATE} from "../actions/filters";
+import {TEXT_UPDATE, STATUS_UPDATE} from "../actions/filters";
 
 
 @Injectable()
@@ -17,7 +17,7 @@ export class AppEffects {
         });
 
 /*    @Effect() showState$ = this.updates$
-        .whenAction(TEXT_UPDATE)
+        .whenAction(STATUS_UPDATE)
         .map((data) => {
             console.log(data);
             return data;
