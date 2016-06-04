@@ -39,7 +39,6 @@ export class Menubar {
     }
     
     textChange(val) {
-        console.log('oninput');
         this._todoService.textChange(val);
     }
 }

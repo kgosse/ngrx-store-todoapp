@@ -14,3 +14,10 @@ export const UPDATE_STORE = '@@todos/UPDATE_STORE';
 /**
  *  action creators
  */
+
+export function addTodo(payload) {
+    return {
+        type: ADD_TODO,
+        payload
+    }
+}

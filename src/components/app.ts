@@ -1,11 +1,13 @@
 import {Component} from '@angular/core';
+import {Store} from '@ngrx/store';
+import * as Rx from "rxjs/Rx";
+
 import {TodoService} from "../services/todo.service";
 import {TodoList} from "./todo-list";
 import {Todo} from "../store/index";
 import {Menubar} from "./menubar";
-
-import {Store} from '@ngrx/store';
 import {AppState} from "../interfaces/AppState";
+import {addTodo} from "../actions/todos";
 
 
 @Component({
@@ -23,7 +25,7 @@ import {AppState} from "../interfaces/AppState";
         <menubar></menubar>
         <div>
           <header id="header">
-            <input type="text" id="new-todo" placeholder="What needs to be done?" [(ngModel)]="todo.text" (keyup.enter)="addTodo()">
+            <input type="text" id="new-todo" placeholder="What needs to be done?" #input (keyup.enter)="todo$.next(input.value);input.value=''">
           </header>
           <section id="main">
             <input type="checkbox" id="toggle-all" (click)="toggleTodos()">
@@ -39,18 +41,13 @@ import {AppState} from "../interfaces/AppState";
     `
 })
 export class App {
-    todo:Todo = new Todo('');
+    todo$ = new Rx.Subject()
+        .map((value: string) => ( value.trim() === '' ? {type: null, payload: null} : addTodo(new Todo(value))));
 
-    constructor(private _todoService: TodoService, store: Store<AppState>) {}
-
-    addTodo() {
-        if (this.todo.text.trim() === '')
-            return;
-        this._todoService.addTodo(this.todo);
-        this.todo = new Todo('');
-    }
-
-    toggleTodos() {
-        this._todoService.toggleTodos();
+    constructor(store: Store<AppState>) {
+        Rx.Observable.merge(
+            this.todo$
+        )
+            .subscribe(store.dispatch.bind(store));
     }
 }
