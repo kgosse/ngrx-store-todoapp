@@ -1,12 +1,10 @@
-import {Component, OnInit} from "@angular/core";
-import {Todo} from "../store/index";
-import {TodoService} from "../services/todo.service";
+import {Component} from "@angular/core";
 import {StatusPipe} from "../pipes/status.pipe";
 import {TextPipe} from "../pipes/text.pipe";
 import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
 import * as Rx from "rxjs/Rx";
-import {removeTodo, toggleTodo} from "../actions/todos";
+import {removeTodo, toggleTodo, toggleEditTodo, updateTodoText} from "../actions/todos";
 
 @Component({
     selector:'todo-list',
@@ -16,15 +14,15 @@ import {removeTodo, toggleTodo} from "../actions/todos";
               <li *ngFor="let todo of (todos | async) | status: (filters | async).status | text: (filters | async).text" [class.completed]="todo.done" [class.editing]="todo.editing">
                 <div class="view">
                   <input type="checkbox" class="toggle" [checked]="todo.done" (click)="toggleTodo$.next(todo)">
-                  <label (dblclick)="editTodo(todo)">{{todo.text}}</label>
+                  <label (dblclick)="toggleEditTodo$.next({todo: todo, editing: true, text: null})">{{todo.text}}</label>
                   <button class="destroy" (click)="removeClick$.next(todo)"></button>
                 </div>
-                <input class="edit" *ngIf="todo.editing" [value]="todo.text" #editedtodo (blur)="stopEditing(todo, editedtodo.value)" (keyup.enter)="updateEditingTodo(todo, editedtodo.value)" (keyup.escape)="cancelEditingTodo(todo)">
+                <input class="edit" *ngIf="todo.editing" [value]="todo.text" #editedtodo (blur)="toggleEditTodo$.next({todo: todo, editing: false, text: editedtodo.value})" (keyup.enter)="updateTodoText$.next({todo: todo, text: editedtodo.value})" (keyup.escape)="toggleEditTodo$.next({todo: todo, editing: false, text: null})">
               </li>
             </ul>
             `
 })
-export class TodoList implements OnInit{
+export class TodoList {
     todos;
     filters;
 
@@ -33,58 +31,23 @@ export class TodoList implements OnInit{
 
     toggleTodo$ =  new Rx.Subject()
         .map((payload) =>  toggleTodo(payload));
+    
+    toggleEditTodo$ = new Rx.Subject()
+        .map((payload) => toggleEditTodo(payload));
+    
+    updateTodoText$ = new Rx.Subject()
+        .map((payload) => updateTodoText(payload));
 
-    constructor(private _todoService: TodoService, store: Store<AppState>){
+    constructor(store: Store<AppState>){
         this.todos = store.select('todos');
         this.filters = store.select('filters');
 
         Rx.Observable.merge(
             this.removeClick$,
-            this.toggleTodo$
+            this.toggleTodo$,
+            this.toggleEditTodo$,
+            this.updateTodoText$
         )
             .subscribe(store.dispatch.bind(store));
-    }
-
-
-    stopEditing(todo: Todo, editedTitle: string) {
-        todo.text = editedTitle;
-        todo.editing = false;
-    }
-
-    cancelEditingTodo(todo: Todo) {
-        todo.editing = false;
-    }
-
-    updateEditingTodo(todo: Todo, editedTitle: string) {
-        editedTitle = editedTitle.trim();
-        todo.editing = false;
-
-        if (editedTitle.length === 0) {
-            return this.removeTodo(todo);
-        }
-
-        todo.text = editedTitle;
-        this._todoService.saveTodos();
-    }
-
-    editTodo(todo:Todo) {
-        todo.editing = true;
-    }
-
-    getTodos() {
-        this._todoService.getTodos().then(todos => this.todos = todos);
-    }
-
-    toggleCheck(todo) {
-        todo.done = !todo.done;
-        this._todoService.saveTodos();
-    }
-
-    removeTodo(todo:Todo) {
-        this._todoService.removeTodo(todo);
-    }
-
-    ngOnInit() {
-        // this.getTodos();
     }
 }

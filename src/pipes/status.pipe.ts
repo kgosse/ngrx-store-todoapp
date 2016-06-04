@@ -1,5 +1,5 @@
 import {PipeTransform, Pipe} from "@angular/core";
-import { IN_PROGRESS, DONE } from "../constants/Statuses";
+import {IN_PROGRESS, DONE} from "../actions/filters";
 
 @Pipe({name: 'status'})
 export class StatusPipe implements PipeTransform{

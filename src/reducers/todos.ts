@@ -1,5 +1,5 @@
 import {ActionReducer} from "@ngrx/store/reducer";
-import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE} from "../actions/todos";
+import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE, TOGGLE_EDITING, UPDATE_TEXT} from "../actions/todos";
 import {Todo} from "../models/Todo.model";
 
 const persistedTodos = JSON.parse(localStorage.getItem('todos') || '[]');
@@ -25,12 +25,31 @@ export const todos:ActionReducer<Todo[]> = (state = todosInitialState, {type, pa
                 return t;
             });
 
+        case TOGGLE_EDITING:
+            return state.map(t => {
+                if (t === payload.todo) {
+                    t.editing = payload.editing;
+                    t.text = payload.text && payload.text.trim() !== "" ? payload.text : t.text;
+                }
+                return t;
+            });
+        
+        case UPDATE_TEXT:
+            return state.map(t => {
+                if (t === payload.todo) {
+                    t.text = payload.text.trim() !== "" ?  payload.text.trim() : t.text;
+                    t.editing = false;
+                }
+                return t;
+            });
+
+
         case TOGGLE_ALL:
             return state.map(t => {
                 t.done = payload;
                 return t;
             });
-        
+
         case ARCHIVE:
             return state.filter(t => t.done === false);
 

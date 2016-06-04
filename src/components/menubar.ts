@@ -1,5 +1,4 @@
 import {Component} from "@angular/core";
-import {TodoService} from "../services/todo.service";
 import {StatusSelector} from "./status-selector";
 import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
@@ -47,7 +46,7 @@ export class Menubar {
     updateFilterText$ = new Rx.Subject()
         .map((text) => filterByText(text));
 
-    constructor(store: Store<AppState>, private _todoService: TodoService) {
+    constructor(store: Store<AppState>) {
         this.todos = store.select('todos');
 
         Rx.Observable.merge(
@@ -55,13 +54,5 @@ export class Menubar {
             this.updateFilterText$
         )
             .subscribe(store.dispatch.bind(store));
-    }
-
-    archive() {
-        this._todoService.archive();
-    }
-
-    textChange(val) {
-        this._todoService.textChange(val);
     }
 }

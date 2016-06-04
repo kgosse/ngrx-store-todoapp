@@ -2,19 +2,15 @@ import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
 import * as Rx from "rxjs/Rx";
 
-import {TodoService} from "../services/todo.service";
 import {TodoList} from "./todo-list";
-import {Todo} from "../store/index";
 import {Menubar} from "./menubar";
 import {AppState} from "../interfaces/AppState";
 import {addTodo, toggleAll} from "../actions/todos";
+import {Todo} from "../models/Todo.model";
 
 
 @Component({
     selector: 'app',
-    providers: [
-        TodoService
-    ],
     directives: <any[]>[
         TodoList,
         Menubar

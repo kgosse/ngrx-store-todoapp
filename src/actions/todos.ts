@@ -8,9 +8,9 @@ export const TOGGLE_TODO = '@@todos/TOGGLE_TODO';
 export const ADD_TODO = '@@todos/ADD_TODO';
 export const TOGGLE_ALL = '@@todos/TOGGLE_ALL';
 export const ARCHIVE = '@@todos/ARCHIVE';
-export const FILTER_REMAINING = '@@todos/FILTER_REMAINING';
-export const REMOVE_DONE_TASKS = '@@todos/REMOVE_DONE_TASKS';
-export const UPDATE_STORE = '@@todos/UPDATE_STORE';
+export const TOGGLE_EDITING = '@@todos/TOGGLE_EDITING';
+export const UPDATE_TEXT = '@@todos/UPDATE_TEXT';
+
 
 
 /**
@@ -49,6 +49,20 @@ export function archive() {
     return {
         type: ARCHIVE,
         payload: null
+    }
+}
+
+export function toggleEditTodo(payload) {
+    return {
+        type: TOGGLE_EDITING,
+        payload
+    }
+}
+
+export function updateTodoText(payload) {
+    return {
+        type: UPDATE_TEXT,
+        payload
     }
 }
 
