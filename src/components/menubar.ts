@@ -4,6 +4,9 @@ import {StatusSelector} from "./status-selector";
 import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
 
+import * as Rx from "rxjs/Rx";
+import {archive} from "../actions/todos";
+
 @Component({
     selector: 'menubar',
     directives: <any[]>[ StatusSelector ],
@@ -26,26 +29,33 @@ import {Store} from "@ngrx/store";
           <input type="text" placeholder="Filter by text" #text (input)="textChange(text.value)"> &nbsp;&nbsp;
           <status-selector></status-selector>
         </div>
-        <a (click)="archive()" class="archive">Archive (<strong>{{getTodosLength(todos | async) - getRemainingTasksLength(todos | async)}}</strong>)</a>
+        <a (click)="archive$.next()" class="archive">Archive (<strong>{{getTodosLength(todos | async) - getRemainingTasksLength(todos | async)}}</strong>)</a>
       </div>
     `
 })
 export class Menubar {
 
     todos;
-    
+
     getTodosLength = (v) => v ? v.length : 0;
     getRemainingTasksLength = (v) => v ? v.filter(t => !t.done).length : 0;
-    
+
+    archive$ = new Rx.Subject()
+        .map(() => archive());
 
     constructor(store: Store<AppState>, private _todoService: TodoService) {
         this.todos = store.select('todos');
+
+        Rx.Observable.merge(
+            this.archive$
+        )
+            .subscribe(store.dispatch.bind(store));
     }
 
     archive() {
         this._todoService.archive();
     }
-    
+
     textChange(val) {
         this._todoService.textChange(val);
     }

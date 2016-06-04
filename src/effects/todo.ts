@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Effect, StateUpdates, toPayload } from '@ngrx/effects';
+import {Injectable} from "@angular/core";
+import {Effect, StateUpdates} from "@ngrx/effects";
 import {AppState} from "../interfaces/AppState";
-import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL} from "../actions/todos";
+import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE} from "../actions/todos";
 
 
 @Injectable()
@@ -9,7 +9,7 @@ export class TodoEffects {
     constructor(private updates$:StateUpdates<AppState>) {}
 
     @Effect() storeTodos$ = this.updates$
-        .whenAction(ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL)
+        .whenAction(ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE)
         .map((data) => {
             localStorage.setItem('todos', JSON.stringify(data.state.todos));
             return data;

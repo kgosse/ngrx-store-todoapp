@@ -1,5 +1,5 @@
 import {ActionReducer} from "@ngrx/store/reducer";
-import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL} from "../actions/todos";
+import {ADD_TODO, REMOVE_TODO, TOGGLE_TODO, TOGGLE_ALL, ARCHIVE} from "../actions/todos";
 import {Todo} from "../models/Todo.model";
 
 const persistedTodos = JSON.parse(localStorage.getItem('todos') || '[]');
@@ -30,6 +30,9 @@ export const todos:ActionReducer<Todo[]> = (state = todosInitialState, {type, pa
                 t.done = payload;
                 return t;
             });
+        
+        case ARCHIVE:
+            return state.filter(t => t.done === false);
 
         default:
             return state;
