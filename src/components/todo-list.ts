@@ -1,14 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {Todo} from "../store/index";
 import {TodoService} from "../services/todo.service";
-import {Action} from "../interfaces/Action";
-import {ARCHIVE, STATUS_CHANGE, TEXT_CHANGE} from "../constants/ActionTypes";
-import {ALL} from "../constants/Statuses";
 import {StatusPipe} from "../pipes/status.pipe";
 import {TextPipe} from "../pipes/text.pipe";
 import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
-
 import * as Rx from "rxjs/Rx";
 import {removeTodo, toggleTodo} from "../actions/todos";
 

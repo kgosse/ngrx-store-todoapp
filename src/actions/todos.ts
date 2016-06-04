@@ -36,3 +36,11 @@ export function toggleTodo(payload) {
         payload
     }
 }
+
+export function toggleAll(payload) {
+    return {
+        type: TOGGLE_ALL,
+        payload
+    }
+}
+
