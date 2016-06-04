@@ -1,4 +1,4 @@
-import {Reducer} from "@ngrx/store";
+import {ActionReducer} from "@ngrx/store/reducer";
 import {ADD_TODO} from "../actions/todos";
 import {Todo} from "../models/Todo.model";
 
@@ -10,7 +10,7 @@ const todosInitialState = persistedTodos.map( (todo: {_text: String, done: Boole
     return ret;
 });
 
-export const todos:Reducer<Todo[]> = (state = todosInitialState, {type, payload}) => {
+export const todos:ActionReducer<Todo[]> = (state = todosInitialState, {type, payload}) => {
     switch (type){
         case ADD_TODO:
             return [payload, ...state];
