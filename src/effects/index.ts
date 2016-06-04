@@ -1,5 +1,5 @@
-import { TodoEffects } from './todo';
+import { AppEffects } from './app';
 
 export default [
-    TodoEffects
+    AppEffects
 ];

@@ -6,6 +6,7 @@ import {Store} from "@ngrx/store";
 
 import * as Rx from "rxjs/Rx";
 import {archive} from "../actions/todos";
+import {filterByText} from "../actions/filters";
 
 @Component({
     selector: 'menubar',
@@ -26,7 +27,7 @@ import {archive} from "../actions/todos";
           <strong>{{getRemainingTasksLength(todos | async)}}</strong> of <strong>{{getTodosLength(todos | async)}} </strong>remaining
         </span>
         <div>
-          <input type="text" placeholder="Filter by text" #text (input)="textChange(text.value)"> &nbsp;&nbsp;
+          <input type="text" placeholder="Filter by text" #text (input)="updateFilterText$.next(text.value)"> &nbsp;&nbsp;
           <status-selector></status-selector>
         </div>
         <a (click)="archive$.next()" class="archive">Archive (<strong>{{getTodosLength(todos | async) - getRemainingTasksLength(todos | async)}}</strong>)</a>
@@ -42,12 +43,16 @@ export class Menubar {
 
     archive$ = new Rx.Subject()
         .map(() => archive());
+    
+    updateFilterText$ = new Rx.Subject()
+        .map((text) => filterByText(text));
 
     constructor(store: Store<AppState>, private _todoService: TodoService) {
         this.todos = store.select('todos');
 
         Rx.Observable.merge(
-            this.archive$
+            this.archive$,
+            this.updateFilterText$
         )
             .subscribe(store.dispatch.bind(store));
     }
