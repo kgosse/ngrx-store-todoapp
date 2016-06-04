@@ -10,6 +10,7 @@ import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
 
 import * as Rx from "rxjs/Rx";
+import {removeTodo} from "../actions/todos";
 
 @Component({
     selector:'todo-list',
@@ -20,7 +21,7 @@ import * as Rx from "rxjs/Rx";
                 <div class="view">
                   <input type="checkbox" class="toggle" [checked]="todo.done" (click)="toggleCheck(todo)">
                   <label (dblclick)="editTodo(todo)">{{todo.text}}</label>
-                  <button class="destroy" (click)="removeTodo(todo)"></button>
+                  <button class="destroy" (click)="removeClick$.next(todo)"></button>
                 </div>
                 <input class="edit" *ngIf="todo.editing" [value]="todo.text" #editedtodo (blur)="stopEditing(todo, editedtodo.value)" (keyup.enter)="updateEditingTodo(todo, editedtodo.value)" (keyup.escape)="cancelEditingTodo(todo)">
               </li>
@@ -32,9 +33,16 @@ export class TodoList implements OnInit{
     _status: "";
     _text: "";
 
+    removeClick$ = new Rx.Subject()
+        .map((payload) =>  removeTodo(payload));
 
     constructor(private _todoService: TodoService, store: Store<AppState>){
         this.todos = store.select('todos');
+
+        Rx.Observable.merge(
+            this.removeClick$
+        )
+            .subscribe(store.dispatch.bind(store));
     }
 
 
@@ -66,12 +74,12 @@ export class TodoList implements OnInit{
     getTodos() {
         this._todoService.getTodos().then(todos => this.todos = todos);
     }
-    
+
     toggleCheck(todo) {
         todo.done = !todo.done;
         this._todoService.saveTodos();
     }
-    
+
     removeTodo(todo:Todo) {
         this._todoService.removeTodo(todo);
     }

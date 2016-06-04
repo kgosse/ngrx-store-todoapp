@@ -21,3 +21,10 @@ export function addTodo(payload) {
         payload
     }
 }
+
+export function removeTodo(payload) {
+    return {
+        type: REMOVE_TODO,
+        payload
+    }
+}
