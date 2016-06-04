@@ -11,5 +11,5 @@ import effects from './effects';
 //noinspection TypeScriptValidateTypes
 bootstrap(App, [
     provideStore({todos}),
-    // runEffects(effects)
+    runEffects(effects)
 ]);
