@@ -1,16 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {Todo} from "../store/index";
 import {TodoService} from "../services/todo.service";
-import {Action} from "../interfaces/Action";
-import {ARCHIVE, STATUS_CHANGE, TEXT_CHANGE} from "../constants/ActionTypes";
-import {ALL} from "../constants/Statuses";
 import {StatusPipe} from "../pipes/status.pipe";
 import {TextPipe} from "../pipes/text.pipe";
 import {AppState} from "../interfaces/AppState";
 import {Store} from "@ngrx/store";
-
 import * as Rx from "rxjs/Rx";
-import {removeTodo} from "../actions/todos";
+import {removeTodo, toggleTodo} from "../actions/todos";
 
 @Component({
     selector:'todo-list',
@@ -19,7 +15,7 @@ import {removeTodo} from "../actions/todos";
             <ul id="todo-list">
               <li *ngFor="let todo of (todos | async) | status: _status | text: _text" [class.completed]="todo.done" [class.editing]="todo.editing">
                 <div class="view">
-                  <input type="checkbox" class="toggle" [checked]="todo.done" (click)="toggleCheck(todo)">
+                  <input type="checkbox" class="toggle" [checked]="todo.done" (click)="toggleTodo$.next(todo)">
                   <label (dblclick)="editTodo(todo)">{{todo.text}}</label>
                   <button class="destroy" (click)="removeClick$.next(todo)"></button>
                 </div>
@@ -36,11 +32,15 @@ export class TodoList implements OnInit{
     removeClick$ = new Rx.Subject()
         .map((payload) =>  removeTodo(payload));
 
+    toggleTodo$ =  new Rx.Subject()
+        .map((payload) =>  toggleTodo(payload));
+
     constructor(private _todoService: TodoService, store: Store<AppState>){
         this.todos = store.select('todos');
 
         Rx.Observable.merge(
-            this.removeClick$
+            this.removeClick$,
+            this.toggleTodo$
         )
             .subscribe(store.dispatch.bind(store));
     }
