@@ -1,6 +1,10 @@
-import 'angular2/bundles/angular2-polyfills';
+import 'core-js/es6';
+import 'core-js/es7/reflect';
+import 'zone.js/dist/zone';
 
-import 'angular2/platform/browser';
-import 'angular2/core';
-import 'angular2/http';
-import 'angular2/router';
+import 'ts-helpers';
+
+// Angular 2
+import '@angular/platform-browser-dynamic';
+import '@angular/core';
+import '@angular/common';

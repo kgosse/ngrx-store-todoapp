@@ -1,21 +1,30 @@
-import {Component} from 'angular2/core';
-import {TodoService} from "../services/todo.service";
+import {Component} from '@angular/core';
+import {Store} from '@ngrx/store';
+import * as Rx from "rxjs/Rx";
+
 import {TodoList} from "./todo-list";
-import {Todo} from "../store/index";
 import {Menubar} from "./menubar";
+import {AppState} from "../interfaces/AppState";
+import {addTodo, toggleAll} from "../actions/todos";
+import {Todo} from "../models/Todo.model";
+
 
 @Component({
     selector: 'app',
+    directives: <any>[
+        TodoList,
+        Menubar
+    ],
     template: `
       <h1 class="title">Todo App</h1>
       <section id="todoapp">
         <menubar></menubar>
         <div>
           <header id="header">
-            <input type="text" id="new-todo" placeholder="What needs to be done?" [(ngModel)]="todo.text" (keyup.enter)="addTodo()">
+            <input type="text" id="new-todo" placeholder="What needs to be done?" #input (keyup.enter)="todo$.next(input.value);input.value=''">
           </header>
           <section id="main">
-            <input type="checkbox" id="toggle-all" (click)="toggleTodos()">
+            <input type="checkbox" id="toggle-all" #checkbox (click)="toggleAll$.next(checkbox.checked)">
             <todo-list></todo-list>
           </section>
         </div>
@@ -25,28 +34,20 @@ import {Menubar} from "./menubar";
         <p>Created by <a href="http://kgosse.github.io/resumecard" target="_blank">kgosse</a></p>
         <p>Based on <a href="http://todomvc.com" target="_blank">TodoMVC</a></p>
       </footer>
-    `,    
-    providers: [
-        TodoService
-    ],
-    directives: [
-        TodoList,
-        Menubar
-    ]
+    `
 })
 export class App {
-    todo:Todo = new Todo('');
+    todo$ = new Rx.Subject()
+        .map((value: string) => ( value.trim() === '' ? {type: null, payload: null} : addTodo(new Todo(value))));
 
-    constructor(private _todoService: TodoService) {}
+    toggleAll$ =  new Rx.Subject()
+        .map((payload) =>  toggleAll(payload));
 
-    addTodo() {
-        if (this.todo.text.trim() === '')
-            return;
-        this._todoService.addTodo(this.todo);
-        this.todo = new Todo('');
-    }
-    
-    toggleTodos() {
-        this._todoService.toggleTodos();
+    constructor(store: Store<AppState>) {
+        Rx.Observable.merge(
+            this.todo$,
+            this.toggleAll$
+        )
+            .subscribe(store.dispatch.bind(store));
     }
 }
