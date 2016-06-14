@@ -9,7 +9,7 @@ import {filterByText} from "../actions/filters";
 
 @Component({
     selector: 'menubar',
-    directives: <any[]>[ StatusSelector ],
+    directives: <any>[ StatusSelector ],
     template: `
       <style>
         .archive {

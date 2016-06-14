@@ -11,7 +11,7 @@ import {Todo} from "../models/Todo.model";
 
 @Component({
     selector: 'app',
-    directives: <any[]>[
+    directives: <any>[
         TodoList,
         Menubar
     ],

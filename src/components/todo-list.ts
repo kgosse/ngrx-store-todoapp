@@ -8,7 +8,7 @@ import {removeTodo, toggleTodo, toggleEditTodo, updateTodoText} from "../actions
 
 @Component({
     selector:'todo-list',
-    pipes:<any[]>[StatusPipe, TextPipe],
+    pipes:<any>[StatusPipe, TextPipe],
     template:`
             <ul id="todo-list">
               <li *ngFor="let todo of (todos | async) | status: (filters | async).status | text: (filters | async).text" [class.completed]="todo.done" [class.editing]="todo.editing">
