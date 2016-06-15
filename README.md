@@ -249,7 +249,7 @@ Otherwise, feel free to leave a comment below or to email me and I'll do my best
 [react]:https://facebook.github.io/react/
 [redux]:http://redux.js.org/index.html
 [flux]:https://facebook.github.io/flux/docs/overview.html
-[ComponentsStructure]:{{"/static/images/ComponentsStructure.png" | prepend: site.baseurl }}
+[ComponentsStructure]:ComponentsStructure.png
 [ngrxgithub]: https://github.com/ngrx
 [rxjsv4]:https://github.com/Reactive-Extensions/RxJS
 [ngrx-effects]:https://github.com/ngrx/effects
