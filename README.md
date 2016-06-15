@@ -242,7 +242,6 @@ Otherwise, feel free to leave a comment below or to email me and I'll do my best
 
 [theapp]:https://kgosse.github.io/ngrx-store-todoapp/
 [githublink]:https://github.com/kgosse/ngrx-store-todoapp
-[ng2todoApp]: {{"/angular2-todo-app/" | prepend: site.baseurl }}
 [nodejs]:https://nodejs.org/en/
 [git]:https://git-scm.com/
 [localhost]:https://locahlhost:8080
